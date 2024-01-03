@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class MainScreenScene : MonoBehaviour
 {
-    private UserDataService userDataService;
+    public MainScreenUI mainScreenUI;
+
+    private UserDataService userDataService = new PlayerPrefsStorage();
 
     void Start()
     {
-        userDataService = new PlayerPrefsStorage();    
+        mainScreenUI.setContinueVisibility(userDataService.haveGameToContinue());
     }
 
     // Update is called once per frame
@@ -21,11 +23,11 @@ public class MainScreenScene : MonoBehaviour
     }
 
     public void onNewGame() {
-        print("onNewGame");
+        mainScreenUI.setSaveSlotsVisibility(true);
     }
 
     public void onLoad() {
-        print("onLoad");
+        mainScreenUI.setSaveSlotsVisibility(true);
     }
 
     public void onExit() {
