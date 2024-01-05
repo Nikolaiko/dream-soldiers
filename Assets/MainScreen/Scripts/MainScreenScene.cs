@@ -1,36 +1,54 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MainScreenScene : MonoBehaviour
 {
     public MainScreenUI mainScreenUI;
 
+    private MainScreenAction lastAction = MainScreenAction.notSet;
     private UserDataService userDataService = new PlayerPrefsStorage();
 
-    void Start()
-    {
+    public void Awake() {
+        mainScreenUI.setNewGameCallback(newButtonClick);
+        mainScreenUI.setLoadGameCallback(loadButtonClick);
+        mainScreenUI.setContinueGameCallback(continueButtonClick);
+        mainScreenUI.setExitGameCallback(exitButtonClick);
+        mainScreenUI.setCloseSaveSlotsCallback(closeSlotsClick);
+    }
+
+    public void Start() {
+        mainScreenUI.initWithGameSaves(userDataService.getAllSavedGames());
+
         mainScreenUI.setContinueVisibility(userDataService.haveGameToContinue());
+        mainScreenUI.setSaveSlotsVisibility(false);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
-    public void onContinue() {
-        print("Continue");
-    }
-
-    public void onNewGame() {
-        mainScreenUI.setSaveSlotsVisibility(true);
-    }
-
-    public void onLoad() {
-        mainScreenUI.setSaveSlotsVisibility(true);
-    }
-
-    public void onExit() {
+    private void exitButtonClick() {
         Application.Quit();
+    }
+
+    private void continueButtonClick() {
+        mainScreenUI.setButtonsVisibility(false);
+        mainScreenUI.setSaveSlotsVisibility(true);
+    }
+
+    private void newButtonClick() {
+        mainScreenUI.setButtonsVisibility(false);
+        mainScreenUI.setSaveSlotsVisibility(true);
+
+        lastAction = MainScreenAction.newGame;
+    }
+
+    private void loadButtonClick() {
+        mainScreenUI.setButtonsVisibility(false);
+        mainScreenUI.setSaveSlotsVisibility(true);
+
+        lastAction = MainScreenAction.loadGame;
+    }
+
+    private void closeSlotsClick() {
+        mainScreenUI.setButtonsVisibility(true);
+        mainScreenUI.setSaveSlotsVisibility(false);
+
+        lastAction = MainScreenAction.notSet;
     }
 }
