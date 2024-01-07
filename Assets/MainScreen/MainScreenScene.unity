@@ -1212,6 +1212,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 146009446}
     m_Modifications:
+    - target: {fileID: 347205339182662121, guid: a73d54ad5459b4ba2b9577c51906893f, type: 3}
+      propertyPath: slotId
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1675305584502010772, guid: a73d54ad5459b4ba2b9577c51906893f, type: 3}
+      propertyPath: slotId
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1778552066669019024, guid: a73d54ad5459b4ba2b9577c51906893f, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1295,6 +1303,10 @@ PrefabInstance:
     - target: {fileID: 3042107693819490054, guid: a73d54ad5459b4ba2b9577c51906893f, type: 3}
       propertyPath: m_Name
       value: SaveSlots
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246389879483070936, guid: a73d54ad5459b4ba2b9577c51906893f, type: 3}
+      propertyPath: slotId
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

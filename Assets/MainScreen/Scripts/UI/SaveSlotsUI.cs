@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using ModestTree;
 using UnityEngine;
 
 public class SaveSlotsUI : MonoBehaviour
@@ -11,12 +12,9 @@ public class SaveSlotsUI : MonoBehaviour
 
     public void Awake() {        
         slots = transform.GetComponentsInChildren<SaveSlotUI>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        foreach(SaveSlotUI currentSlot in slots) {
+            currentSlot.setSlotClickCallback(onSlotClick);
+        }
     }
 
     public void setSlotClickCallback(Action<GameSlot> action) {
@@ -27,9 +25,21 @@ public class SaveSlotsUI : MonoBehaviour
         gameObject.SetActive(isVisible);
     }
 
-    public void initWithGameSaves(List<GameData> gameDatas) {
-        
+    public void initWithGameSaves(List<GameData> gameDatas) {        
+        foreach (SaveSlotUI currentSlot in slots) {
+            currentSlot.slotDate.text = currentSlot.slotId.slotName();
+            try {
+                GameData gameData = gameDatas.First(game => game.gameId == currentSlot.slotId);
+                DateTime dateTime = new DateTime(gameData.updatedAtTicks);
+                currentSlot.slotDate.text = dateTime.ToLongTimeString();
+            } catch(InvalidOperationException) {
+                currentSlot.slotDate.text = "Empty";
+            }
+            
+        }
     }
 
-    
+    private void onSlotClick(GameSlot slotId) {
+        onGameSlotClick(slotId);
+    }
 }

@@ -18,6 +18,7 @@ public class MainScreenUI : MonoBehaviour
     private Action loadButtonCallback;
     private Action exitButtonCallback;
     private Action closeSaveSlotsCallback;
+    private Action<GameSlot> onGameSlotClick;
 
     public void Start()
     {
@@ -26,6 +27,8 @@ public class MainScreenUI : MonoBehaviour
         newGameButton.onClick.AddListener(onNewGame);
         exitButton.onClick.AddListener(onExit);
         closeSaveSlotsButton.onClick.AddListener(onCloseSaveSlots);
+
+        saveSlotsUI.setSlotClickCallback(onSlotClick);
     }
 
     public void initWithGameSaves(List<GameData> gameDatas) {
@@ -64,6 +67,10 @@ public class MainScreenUI : MonoBehaviour
         continueButtonCallback = callback;
     }
 
+    public void setSlotClickCallback(Action<GameSlot> action) {
+        onGameSlotClick = action;
+    }
+
     private void onContinue() {
         continueButtonCallback();
     }
@@ -82,5 +89,9 @@ public class MainScreenUI : MonoBehaviour
 
     private void onCloseSaveSlots() {
         closeSaveSlotsCallback();
+    }
+
+    private void onSlotClick(GameSlot slotId) {
+        onGameSlotClick(slotId);
     }
 }

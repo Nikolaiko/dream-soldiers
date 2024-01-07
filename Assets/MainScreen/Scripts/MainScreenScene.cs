@@ -1,4 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainScreenScene : MonoBehaviour
 {
@@ -6,6 +10,7 @@ public class MainScreenScene : MonoBehaviour
 
     private MainScreenAction lastAction = MainScreenAction.notSet;
     private UserDataService userDataService = new PlayerPrefsStorage();
+    private List<GameData> savedGames = new List<GameData>();
 
     public void Awake() {
         mainScreenUI.setNewGameCallback(newButtonClick);
@@ -13,10 +18,12 @@ public class MainScreenScene : MonoBehaviour
         mainScreenUI.setContinueGameCallback(continueButtonClick);
         mainScreenUI.setExitGameCallback(exitButtonClick);
         mainScreenUI.setCloseSaveSlotsCallback(closeSlotsClick);
+        mainScreenUI.setSlotClickCallback(slotClick);
     }
 
     public void Start() {
-        mainScreenUI.initWithGameSaves(userDataService.getAllSavedGames());
+        savedGames = userDataService.getAllSavedGames();
+        mainScreenUI.initWithGameSaves(savedGames);
 
         mainScreenUI.setContinueVisibility(userDataService.haveGameToContinue());
         mainScreenUI.setSaveSlotsVisibility(false);
@@ -27,8 +34,12 @@ public class MainScreenScene : MonoBehaviour
     }
 
     private void continueButtonClick() {
-        mainScreenUI.setButtonsVisibility(false);
-        mainScreenUI.setSaveSlotsVisibility(true);
+        GameData? data = userDataService.getLastPlayedGame();        
+        if (data == null) {
+            Debug.Log("No last saved data.");
+        } else {
+            startGameWithData((GameData)data);
+        }
     }
 
     private void newButtonClick() {
@@ -50,5 +61,46 @@ public class MainScreenScene : MonoBehaviour
         mainScreenUI.setSaveSlotsVisibility(false);
 
         lastAction = MainScreenAction.notSet;
+    }
+
+    private void slotClick(GameSlot slotId) {
+        switch (lastAction) {
+            case MainScreenAction.newGame: {
+                startNewGame(slotId);
+                break;
+            }
+            case MainScreenAction.loadGame: {
+                loadGame(slotId);
+                break;
+            }
+            default: {
+                Debug.Log("Wrong action!");
+                break;
+            }
+        }
+    }
+
+    private void startNewGame(GameSlot slotId) {
+        GameDataBuilder builder = new GameDataBuilder();
+        GameData data = builder
+                            .setSlot(slotId)
+                            .build();
+        
+        startGameWithData(data);
+    }
+
+    private void loadGame(GameSlot slotId) {        
+        try {
+            GameData data = savedGames.First(gameData => gameData.gameId == slotId);            
+            startGameWithData(data);
+        } catch (InvalidOperationException) {
+            Debug.Log("No save data for : " + slotId.slotName());
+        }
+    }
+
+    private void startGameWithData(GameData data) {
+        MapScreenScene.initialGameData = data;
+        userDataService.saveGame(data);
+        SceneManager.LoadScene(Convert.ToInt32(SceneIndexes.mapScene));
     }
 }
