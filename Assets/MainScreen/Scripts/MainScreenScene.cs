@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Zenject;
 
 public class MainScreenScene : MonoBehaviour
 {
-    public MainScreenUI mainScreenUI;
+    [Inject]
+    private MainScreenUI mainScreenUI;
 
     private MainScreenAction lastAction = MainScreenAction.notSet;
-    private UserDataService userDataService = new PlayerPrefsStorage();
+
+    [Inject]
+    private UserDataService userDataService;
     private List<GameData> savedGames = new List<GameData>();
 
     public void Awake() {
@@ -30,6 +34,7 @@ public class MainScreenScene : MonoBehaviour
     }
 
     private void exitButtonClick() {
+        print(userDataService);
         Application.Quit();
     }
 

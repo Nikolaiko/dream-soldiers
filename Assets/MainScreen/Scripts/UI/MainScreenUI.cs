@@ -2,15 +2,17 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class MainScreenUI : MonoBehaviour
 {
+    [Inject]
+    private SaveSlotsUI saveSlotsUI;
     public Button continueButton;
     public Button loadButton;
     public Button newGameButton;
     public Button exitButton;
     public Button closeSaveSlotsButton;
-    public SaveSlotsUI saveSlotsUI;
     public GameObject buttonsPanel;
 
     private Action continueButtonCallback;
